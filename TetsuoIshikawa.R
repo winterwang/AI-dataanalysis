@@ -72,3 +72,22 @@ riskfactors %>%
   corrr::shave() %>% 
   corrr::fashion() %>% 
   knitr::kable()
+
+
+# riskfactors %>% 
+#   select_if(is.numeric) %>% 
+#   corrr::correlate() %>% 
+#   corrr::stretch() %>% 
+#   ggplot() + 
+#   geom_tile(aes(x =x, y =y, fill))
+
+
+# 相関ネットワーク
+
+riskfactors %>% 
+  select_if(is.numeric) %>% 
+  corrr::correlate() %>% 
+  corrr::network_plot(min_cor = 0.1, 
+                      colours = c("skyblue", "white", "indianred2"))
+
+# 
