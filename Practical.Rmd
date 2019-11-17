@@ -1,0 +1,107 @@
+---
+title: "practical"
+output: html_document
+---
+
+
+## 1. 変数間の相関係数を計算しよう
+
+```{r message=FALSE}
+library(naniar)
+library(tidyverse)
+library(skimr)
+library(superheat)
+library(ggalluvial)
+library(corrr)
+library(readr)
+data_train <- read_csv("data_train.csv", )
+
+data_train %>% 
+  select_if(is.numeric) %>% 
+  corrr::correlate() %>% 
+  corrr::shave() %>% 
+  corrr::fashion() %>% 
+  knitr::kable()
+```
+
+
+
+
+
+
+## 2. Superheatでheatmapを描いてみよう
+
+```{r message=FALSE}
+data_train %>% 
+  select_if(is.numeric) %>% 
+  corrr::correlate() %>% 
+  corrr::stretch() %>% 
+  ggplot() + 
+  geom_tile(aes(x = x, y=y, fill = r)) + 
+  labs(x = "", y = "") + 
+  scale_fill_gradientn(limits = c(-0.5, 1), breaks = seq(-0.5, 1, 0.5), 
+                       colors = rev(RColorBrewer::brewer.pal(9, "Spectral")), na.value = "white") + 
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+
+```{r message=FALSE}
+data_train %>% 
+  select_if(is.numeric) %>% t() %>% 
+  superheat::superheat(scale = TRUE, 
+                       heat.na.col = "white",
+                       row.dendrogram = TRUE,
+                       col.dendrogram = TRUE)
+```
+
+
+
+## 3. 変数ごと（できれば男女に分けて）histgramを描いてみよう
+
+```{r message=FALSE}
+# Change histogram plot line colors by groups
+# library(plyr)
+# mu <- ddply(data_train, "sex", summarise, grp.mean=mean(weight_lbs))
+
+
+ggplot(data_train, aes(x=weight_lbs, fill=sex)) +
+  geom_histogram(alpha = 0.5, position = "identity")
+  # geom_vline(data=mu, aes(xintercept=grp.mean, color=sex),
+  #            linetype="dashed")
+
+# Overlaid histograms
+ggplot(data_train, aes(x=weight_lbs, color=sex)) +
+geom_histogram(fill="white", position="dodge")
+```
+
+
+```{r message=FALSE}
+numeric_fa <- colnames(data_train %>% select_if(is.numeric))
+
+plots <- list()
+for (f in 1:length(numeric_fa)) {
+  plots[[f]] <-  ggplot(data_train, aes_string(x=numeric_fa[f], fill="sex")) +
+  geom_histogram(alpha = 0.5, position = "identity") + 
+   labs(title= paste0("(", f ,") ", numeric_fa[f], " histogram by sex"))
+}
+plots
+```
+
+
+## 4. health_overallを予測しよう（分類）
+
+
+```{r}
+riskfactors2 <- data_train %>% 
+  select(-c("drink_average", "drink_any", "drink_days", "pregnant", "smoke_days", "smoke_stop", "smoke_last"))
+```
+
+
+
+## 5. age を予測しよう（回帰モデル）
+
+
+```{r}
+
+```
+

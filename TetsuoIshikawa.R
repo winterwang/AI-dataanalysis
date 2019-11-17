@@ -90,4 +90,37 @@ riskfactors %>%
   corrr::network_plot(min_cor = 0.1, 
                       colours = c("skyblue", "white", "indianred2"))
 
-# 
+# 20191117 practical 
+
+## 1. 変数間の相関係数を計算しよう
+library(readr)
+data_train <- read_csv("data_train.csv", )
+
+data_train %>% 
+  select_if(is.numeric) %>% 
+  corrr::correlate() %>% 
+  corrr::shave() %>% 
+  corrr::fashion() 
+
+
+
+
+## 2. Superheatでheatmapを描いてみよう
+
+
+data_train %>% 
+  select_if(is.numeric) %>% t() %>% 
+  superheat::superheat(scale = TRUE, 
+                       heat.na.col = "white",
+                       row.dendrogram = TRUE,
+                       col.dendrogram = TRUE)
+
+
+## 3. 変数ごと（できれば男女に分けて）histgramを描いてみよう
+
+
+
+## 4. health_overallを予測しよう（分類）
+
+## 5. age を予測しよう（回帰モデル）
+
