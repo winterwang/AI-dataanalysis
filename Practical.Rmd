@@ -102,6 +102,13 @@ riskfactors2 <- data_train %>%
 
 
 ```{r}
-
+library(caret)
+tranControl(
+  method = "repeatedcv", 
+  number = 10, 
+  ## repeat 10 times
+  savePredictions = TRUE,
+  classProbs = 
+)
 ```
 
